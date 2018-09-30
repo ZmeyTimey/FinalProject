@@ -71,10 +71,7 @@ public class UserDAOTest {
             user.setPhone("3333333");
             user.setRole(Role.ADMIN);
 
-//            Integer idUser = 3;
-        System.out.println("addUser");
             Integer idUser = userDAO.addUser(user);
-            System.out.println("userAdded");
             String gottenLogin = getUserLogin(idUser);
 
             assertEquals(user.getLogin(), gottenLogin);
