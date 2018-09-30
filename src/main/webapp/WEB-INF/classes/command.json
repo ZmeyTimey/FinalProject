@@ -1,0 +1,4 @@
+{
+  "login": "by.epam.university.controller.command.impl.LoginCommand",
+  "logout": "by.epam.university.controller.command.impl.LogoutCommand"
+}

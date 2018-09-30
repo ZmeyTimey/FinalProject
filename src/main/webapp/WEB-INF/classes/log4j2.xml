@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+
+    <Appenders>
+        <Console name="Console">
+            <PatternLayout>
+                <Pattern>%d %p %c{2} [%t] %l %m%n"</Pattern>
+            </PatternLayout>
+        </Console>
+
+        <File name="File" fileName="logs/appTest.log">
+            <PatternLayout>
+                <Pattern>%d %p %c{1.} [%t] %m %ex%n</Pattern>
+            </PatternLayout>
+        </File>
+
+        <File name="File2" fileName="logs/appTest2.log">
+            <PatternLayout>
+                <Pattern>%d %p %c{2} [%t] %l %m%n"</Pattern>
+            </PatternLayout>
+        </File>
+    </Appenders>
+
+    <Loggers>
+        <Root level="trace">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="File"/>
+            <AppenderRef ref="File2" level="info"/>
+        </Root>
+    </Loggers>
+
+
+</Configuration>
