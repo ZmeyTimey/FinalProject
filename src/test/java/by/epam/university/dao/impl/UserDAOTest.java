@@ -3,6 +3,7 @@ package by.epam.university.dao.impl;
 import by.epam.university.dao.DAOFactory;
 import by.epam.university.dao.UserDAO;
 import by.epam.university.dao.connection.ConnectionPool;
+import by.epam.university.dao.connection.ConnectionProvider;
 import by.epam.university.dao.exception.ConnectionPoolException;
 import by.epam.university.dao.exception.DAOException;
 import by.epam.university.model.Role;
@@ -22,8 +23,7 @@ import static org.testng.AssertJUnit.assertEquals;
 public class UserDAOTest {
 
     private static final UserDAO userDAO
-            = DAOFactory.getFactory()
-            .getNonTransactionalDAOManager().getUserDAO();
+            = DAOFactory.getInstance().getUserDAO();
 
     private static final String GET_USER_LOGIN
             = "SELECT `login` FROM `users` WHERE `id` = ?";
@@ -37,6 +37,7 @@ public class UserDAOTest {
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
         ConnectionPool.getInstance().destroy();
+        ConnectionPool.getInstance().deregisterAllDrivers();
     }
 
     @DataProvider (name = "login")
@@ -60,32 +61,34 @@ public class UserDAOTest {
     public void testAddUser()
             throws DAOException, ConnectionPoolException, SQLException {
 
-            User user = new User();
+        User user = new User();
 
-            user.setLogin("userchik");
-            user.setPassword("qwa1234");
-            user.setName("Алексей");
-            user.setMiddlename("Иванов");
-            user.setSurname("Иванович");
-            user.setEmail("userchik@mail.ru");
-            user.setPhone("3333333");
-            user.setRole(Role.ADMIN);
+        user.setLogin("userchik");
+        user.setPassword("qwa1234");
+        user.setName("Алексей");
+        user.setMiddlename("Иванов");
+        user.setSurname("Иванович");
+        user.setEmail("userchik@mail.ru");
+        user.setPhone("3333333");
+        user.setRole(Role.ADMIN);
 
-            Integer idUser = userDAO.addUser(user);
-            String gottenLogin = getUserLogin(idUser);
+        Integer idUser = userDAO.addUser(user);
+        String gottenLogin = getUserLogin(idUser);
 
-            assertEquals(user.getLogin(), gottenLogin);
+        assertEquals(user.getLogin(), gottenLogin);
     }
 
     private String getUserLogin(Integer id)
             throws ConnectionPoolException, SQLException {
+
+        ConnectionProvider provider = ConnectionProvider.getInstance();
 
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
 
         try {
-            connection = ConnectionPool.getInstance().getConnection();
+            connection = provider.obtainConnection();
             statement = connection.prepareStatement(GET_USER_LOGIN);
             statement.setInt(1, id);
             resultSet = statement.executeQuery();
@@ -93,8 +96,8 @@ public class UserDAOTest {
             return resultSet.getString(1);
 
         } finally {
-            ConnectionPool.getInstance().closeDBResources(
-                    connection, statement, resultSet);
+            provider.close(connection);
+            provider.closeResources(resultSet, statement);
         }
     }
 }

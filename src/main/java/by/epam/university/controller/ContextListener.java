@@ -8,12 +8,14 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 
 /**
  * The class initializes and destroys the connection pool
  * when application starts and shuts down respectively.
  *
  */
+@WebListener()
 public class ContextListener implements ServletContextListener {
 
     /**
@@ -23,9 +25,9 @@ public class ContextListener implements ServletContextListener {
             = LogManager.getLogger(ContextListener.class);
 
     /**
-     * Properties file with data base and connection pool configurations.
+     * Name of bundle with database properties.
      */
-    private static final String PROPERTIES_FILE = "db";
+    private static final String DB_PROPERTIES = "db";
 
     /**
      * {@inheritDoc}
@@ -34,7 +36,7 @@ public class ContextListener implements ServletContextListener {
     public void contextInitialized(final ServletContextEvent contextEvent) {
 
         try {
-            ConnectionPool.getInstance().initialize(PROPERTIES_FILE);
+            ConnectionPool.getInstance().initialize(DB_PROPERTIES);
             LOGGER.log(Level.DEBUG, "Connection pool was initialized");
 
         } catch (ConnectionPoolException e) {
@@ -51,6 +53,8 @@ public class ContextListener implements ServletContextListener {
         try {
             ConnectionPool.getInstance().destroy();
             LOGGER.log(Level.DEBUG, "Connection pool was closed");
+            ConnectionPool.getInstance().deregisterAllDrivers();
+            LOGGER.log(Level.DEBUG, "Drivers were deregistered");
 
         } catch (ConnectionPoolException e) {
             LOGGER.log(Level.ERROR,

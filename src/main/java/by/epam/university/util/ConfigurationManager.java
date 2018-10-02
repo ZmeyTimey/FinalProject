@@ -9,22 +9,24 @@ public class ConfigurationManager {
 
     private static final ConfigurationManager INSTANCE
             = new ConfigurationManager();
+
     private final static ResourceBundle path
             = ResourceBundle.getBundle("path");
     private final static ResourceBundle messages
             = ResourceBundle.getBundle("messages");
-    private final static ResourceBundle databaseParameters
-            = ResourceBundle.getBundle("db_config");
 
-    private final static String MESSAGES_RU = "messages_ru";
-    private final static String MESSAGES_EN = "messages_en";
-    private final static String RUSSIAN_LOCALE = "ru";
-    private final static String ENGLISH_LOCALE = "en";
+    private final static String MESSAGES = "messages";
+//    private final static String MESSAGES_RU = "messages_ru";
+//    private final static String MESSAGES_EN = "messages_en";
+//    private final static String RUSSIAN_LOCALE = "ru";
+//    private final static String ENGLISH_LOCALE = "en";
     private final static String EMPTY_STRING = "";
 
+    /**
+     * Prevents getting the instance of Configuration Manager
+     * with a help of constructor.
+     */
     private ConfigurationManager() {
-        throw new AssertionError("You can't create an instance"
-                + "of this class using constructor");
     }
 
     /**
@@ -42,7 +44,7 @@ public class ConfigurationManager {
      * @return the path
      *
      */
-    public String getProperty(final String key) {
+    public String getPath(final String key) {
         return path.getString(key);
     }
 
@@ -65,11 +67,13 @@ public class ConfigurationManager {
 //     * @return the message
 //     *
 //     */
-//    public String getMessage(final String key, final String locale) {
-//
-//        String message = EMPTY_STRING;
-//
-//        switch (locale) {
+    public String getMessage(final String key, final String locale) {
+
+        String message = EMPTY_STRING;
+
+        message = ResourceBundle.getBundle(MESSAGES).getString(key);
+
+        //        switch (locale) {
 //            case RUSSIAN_LOCALE:
 //                message = ResourceBundle.getBundle(MESSAGES_RU).getString(key);
 //                break;
@@ -77,8 +81,8 @@ public class ConfigurationManager {
 //                message = ResourceBundle.getBundle(MESSAGES_EN).getString(key);
 //                break;
 //        }
-//        return message;
-//    }
+        return message;
+    }
 
     /**
      * Gets the database parameters.
@@ -87,7 +91,11 @@ public class ConfigurationManager {
      * @return the database parameters
      *
      */
-    public String getDatabaseParameters(final String key) {
+    public String getDatabaseParameters(final String dbProperties,
+                                        final String key) {
+
+        ResourceBundle databaseParameters
+                = ResourceBundle.getBundle(dbProperties);
         return databaseParameters.getString(key);
     }
 }

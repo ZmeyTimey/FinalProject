@@ -2,7 +2,7 @@ package by.epam.university.controller;
 
 import by.epam.university.command.Command;
 import by.epam.university.command.CommandFactory;
-import by.epam.university.command.constant.ViewPath;
+import by.epam.university.command.constant.PathConstants;
 import by.epam.university.content.RequestContent;
 import by.epam.university.content.RequestResult;
 import by.epam.university.util.ConfigurationManager;
@@ -32,7 +32,7 @@ public class Controller extends HttpServlet {
      */
     private static final String ERROR_PAGE
             = ConfigurationManager.getInstance()
-            .getProperty(ViewPath.ERROR_PAGE);
+            .getPath(PathConstants.ERROR_PAGE);
 
     /**
      * {@inheritDoc}
@@ -92,16 +92,18 @@ public class Controller extends HttpServlet {
 
             switch (requestResult.getNavigationType()) {
                 case FORWARD:
+                    System.out.println(requestResult.getPage());
                     forward(requestResult.getPage(), request, response);
                     break;
                 case REDIRECT:
                     redirect(requestResult.getPage(), response);
                     break;
-                default:
-                    LOGGER.log(Level.ERROR,
-                            "Some troubles occurred"
-                                    + "while executing command");
-                    redirect(ERROR_PAGE, response);
+//                default:
+//                    LOGGER.log(Level.ERROR,
+//                            "Some troubles occurred"
+//                                    + "while executing command");
+//                    redirect(ERROR_PAGE, response);
+//                    break;
             }
 
         } else {
@@ -118,8 +120,8 @@ public class Controller extends HttpServlet {
                          final HttpServletResponse response)
             throws ServletException, IOException {
 
-        getServletContext().getRequestDispatcher(page).
-                forward(request, response);
+        getServletContext().getRequestDispatcher(page)
+                .forward(request, response);
     }
 
     private void redirect(final String page,

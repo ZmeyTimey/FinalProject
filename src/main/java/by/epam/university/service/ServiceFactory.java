@@ -7,17 +7,20 @@ import by.epam.university.service.impl.UserServiceImpl;
  */
 public class ServiceFactory {
 
-    private static final ServiceFactory instance = new ServiceFactory();
-    private static final UserService userService = new UserServiceImpl();
+    private static final ServiceFactory INSTANCE = new ServiceFactory();
+    private static final UserService USER_SERVICE = new UserServiceImpl();
 
+    /**
+     * Prevents getting more than one instance of this class.
+     */
     private ServiceFactory() {
     }
 
     public static ServiceFactory getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     public UserService getUserService() {
-        return userService;
+        return USER_SERVICE;
     }
 }

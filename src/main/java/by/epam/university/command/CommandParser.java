@@ -26,9 +26,11 @@ public class CommandParser {
     public Map<String, Command> getCommands()
             throws CommandParserException {
 
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader classLoader
+                = Thread.currentThread().getContextClassLoader();
 
-        try (InputStream inputStream = classLoader.getResourceAsStream(JSON_FILE)) {
+        try (InputStream inputStream
+                     = classLoader.getResourceAsStream(JSON_FILE)) {
 
             String textFromFile = IOUtils.toString(inputStream);
             JSONObject jsonObject = new JSONObject(textFromFile);
@@ -40,8 +42,7 @@ public class CommandParser {
         }
     }
 
-
-    private Map<String, Command> toMap(JSONObject jsonObject)
+    private Map<String, Command> toMap(final JSONObject jsonObject)
             throws CommandParserException {
 
         Map<String, Command> map = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
@@ -58,18 +59,20 @@ public class CommandParser {
     }
 
 
-    private Command createCommand(Object value)
+    private Command createCommand(final Object value)
             throws CommandParserException {
 
         try {
             String commandClassString = value.toString();
             Class<?> commandClass = Class.forName(commandClassString);
 
-            return (Command) commandClass.getDeclaredConstructor().newInstance();
+            return (Command) commandClass
+                    .getDeclaredConstructor().newInstance();
 
-        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException
-                | NoSuchMethodException | SecurityException | ClassNotFoundException e) {
+        } catch (InstantiationException | IllegalAccessException
+                | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException
+                | ClassNotFoundException e) {
 
             throw new CommandParserException("Failed to create command", e);
         }

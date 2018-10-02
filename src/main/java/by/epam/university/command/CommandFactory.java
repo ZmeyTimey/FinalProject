@@ -6,7 +6,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -54,9 +53,6 @@ public final class CommandFactory {
      * Prevents getting an instance of this class.
      */
     private CommandFactory() {
-        throw new AssertionError(
-                "Getting instance of this class"
-                        + "with the help of constructor is not allowed!");
     }
 
     /**
@@ -71,6 +67,7 @@ public final class CommandFactory {
      * @param requestContent
      *            an object of {@link RequestContent}
      *            the wrapper class for {@code request}
+     * @return command.
      */
     public Command getCommand(final RequestContent requestContent) {
 

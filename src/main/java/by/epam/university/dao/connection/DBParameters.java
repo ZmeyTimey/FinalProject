@@ -1,6 +1,9 @@
 package by.epam.university.dao.connection;
 
-public class DBParameter {
+/**
+ * Stores the names of data base parameters.
+ */
+public class DBParameters {
 
     /** Defines data base and connection pool configurations */
     public static final String DB_DRIVER = "db.driver";

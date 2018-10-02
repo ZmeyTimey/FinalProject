@@ -1,6 +1,7 @@
 package by.epam.university.dao.impl;
 
 import by.epam.university.dao.connection.ConnectionPool;
+import by.epam.university.dao.connection.ConnectionProvider;
 import by.epam.university.dao.exception.ConnectionPoolException;
 
 import org.apache.ibatis.jdbc.ScriptRunner;
@@ -28,9 +29,11 @@ public class TestUtil {
     }
 
     public static void initializeDB() throws ConnectionPoolException, SQLException {
+        ConnectionProvider provider = ConnectionProvider.getInstance();
         Connection connection = null;
+
         try {
-            connection = ConnectionPool.getInstance().getConnection();
+            connection = provider.obtainConnection();
             ScriptRunner scriptRunner = new ScriptRunner(connection);
 
             ClassLoader classLoader = UserDAOTest.class.getClassLoader();
@@ -39,7 +42,7 @@ public class TestUtil {
 
             scriptRunner.runScript(reader);
         } finally {
-            connection.close();
+            provider.close(connection);
         }
 
     }

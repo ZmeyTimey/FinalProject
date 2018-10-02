@@ -1,180 +1,255 @@
 package by.epam.university.dao.connection;
 
 import by.epam.university.dao.exception.ConnectionPoolException;
+import by.epam.university.util.ConfigurationManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.Driver;
+import java.util.Enumeration;
 import java.util.ResourceBundle;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * The class for instantiation of connection pool.
  */
 public final class ConnectionPool {
 
-    /** The queue for keeping the connections */
-    private BlockingQueue<Connection> connectionQueue;
+    /**
+     * Logger instance for logging.
+     */
+    private static final Logger LOGGER
+            = LogManager.getLogger(ConnectionPool.class);
 
-    /** Defines data base and connection pool configurations */
+    /** The queue of free connections. */
+    private BlockingQueue<Connection> freeConnections;
+    /** The queue of taken connections. */
+    private BlockingQueue<Connection> takenConnections;
+
+    /** Name of driver used to connect to the database. */
     private String driverName;
+    /** URL of data base. */
     private String dbUrl;
+    /** User's name for connecting to data base. */
     private String user;
+    /** Password for connecting to data base. */
     private String password;
+    /** Size of connection pool. */
     private int poolSize;
 
-    private static final ConnectionPool INSTANCE = new ConnectionPool();
+    /**
+     * Single instance of ConnectionPool.
+     */
+    private static ConnectionPool instance = new ConnectionPool();
 
     /**
-     * Initializes a new Connection Pool instance.
+     * Shows is Connection Pool initialized.
+     */
+    private static final AtomicBoolean IS_INITIALIZED
+            = new AtomicBoolean(false);
+
+    /**
+     * Lock for preventing entering getInstance()
+     * method by more than one thread.
+     */
+    private static final Lock LOCK = new ReentrantLock();
+
+    /**
+     * Prevents getting more than one instance of this class.
      */
     private ConnectionPool() {
     }
 
+    /**
+     * Gets instance of ConnectionPool.
+     * @return instance.
+     */
     public static ConnectionPool getInstance() {
-        return INSTANCE;
+
+        if (!IS_INITIALIZED.get()) {
+            LOCK.lock();
+
+            try {
+                if (instance == null) {
+                    instance = new ConnectionPool();
+                    IS_INITIALIZED.set(true);
+                }
+            } finally {
+                LOCK.unlock();
+            }
+        }
+        return instance;
     }
 
-    public BlockingQueue<Connection> getConnectionQueue() {
-        return connectionQueue;
+    /**
+     * Gets free connections.
+     * @return free connections.
+     */
+    public BlockingQueue<Connection> getFreeConnections() {
+        return freeConnections;
+    }
+
+    /**
+     * Gets taken connections.
+     * @return taken connections.
+     */
+    public BlockingQueue<Connection> getTakenConnections() {
+        return takenConnections;
     }
 
     /**
      * Initializes the Connection Pool. Gets data base and connection pool
-     * configurations from the properties file (path to this file specified by
-     * {@code propertiesFilePath} param). Creates a new queue of connections of
-     * defined size and fills it with pooled connections to the defined data base
+     * configurations with a help of {@link ConfigurationManager}.
+     * Creates a new queue of connections of defined size and fills it
+     * with pooled connections to the defined data base
      * (see {@link PooledConnection}
-     *i
-     * @param propertiesFilePath
-     *            the path to properties file with data base and connection pool
-     *            configurations
+     *
      * @throws ConnectionPoolException
      *             exception during connection pool initialization
      */
-    public void initialize(String propertiesFilePath) throws ConnectionPoolException {
-        initDBParametres(propertiesFilePath);
+    public void initialize(final String dbProperties)
+            throws ConnectionPoolException {
+
+        initPoolData(dbProperties);
 
         try {
             Class.forName(driverName);
-            connectionQueue = new ArrayBlockingQueue<>(poolSize);
+
+            freeConnections = new ArrayBlockingQueue<>(poolSize);
+            takenConnections = new ArrayBlockingQueue<>(poolSize);
 
             for (int i = 0; i < poolSize; i++) {
-                Connection connection = DriverManager.getConnection(dbUrl, user, password);
-                connectionQueue.add(new PooledConnection(connection));
+                Connection connection
+                        = DriverManager.getConnection(dbUrl, user, password);
+                freeConnections.add(new PooledConnection(connection));
             }
+
         } catch (ClassNotFoundException | SQLException e) {
-            throw new ConnectionPoolException("Exception during connection pool initialization.", e);
-        }
-    }
-
-    private void initDBParametres(String propertiesFilePath) {
-
-        ResourceBundle resource = ResourceBundle.getBundle(propertiesFilePath);
-        driverName = resource.getString(DBParameter.DB_DRIVER);
-
-        String unicode = resource.getString((DBParameter.DB_UNICODE));
-        String ssl = resource.getString(DBParameter.DB_SSL);
-        String timezone = resource.getString(DBParameter.DB_TIMEZONE);
-        String url = resource.getString(DBParameter.DB_URL);
-
-        dbUrl = url + unicode + ssl + timezone;
-        user = resource.getString(DBParameter.DB_USER);
-        password = resource.getString(DBParameter.DB_PASSWORD);
-        poolSize = Integer.parseInt(resource.getString(DBParameter.DB_POOL_SIZE));
-
-        if (poolSize < 0) {
-            throw new RuntimeException(
-                    "Pool size incorrectly specified in property file, the number of connections should be positive digit.");
+            throw new ConnectionPoolException(
+                    "Exception during connection pool initialization.", e);
         }
     }
 
     /**
-     * Returns the connection which is {@link PooledConnection} from the connection
-     * pool.
-     *
+     * Initializes Connection Pool data.
+     */
+    private void initPoolData(final String dbProperties) {
+
+//        ConfigurationManager configurationManager
+//                = ConfigurationManager.getInstance();
+
+        ResourceBundle resource = ResourceBundle.getBundle(dbProperties);
+
+        driverName = resource.getString(DBParameters.DB_DRIVER);
+
+        String unicode = resource.getString((DBParameters.DB_UNICODE));
+        String ssl = resource.getString(DBParameters.DB_SSL);
+        String timezone = resource.getString(DBParameters.DB_TIMEZONE);
+        String url = resource.getString(DBParameters.DB_URL);
+
+        dbUrl = url + unicode + ssl + timezone;
+        user = resource.getString(DBParameters.DB_USER);
+        password = resource.getString(DBParameters.DB_PASSWORD);
+        poolSize = Integer.parseInt(resource.getString(DBParameters.DB_POOL_SIZE));
+//        driverName = configurationManager
+//                .getDatabaseParameters(dbProperties, DBParameters.DB_DRIVER);
+//
+//        String url = configurationManager
+//                .getDatabaseParameters(dbProperties, DBParameters.DB_URL);
+//        String unicode = configurationManager
+//                .getDatabaseParameters(dbProperties, DBParameters.DB_UNICODE);
+//        String ssl = configurationManager
+//                .getDatabaseParameters(dbProperties, DBParameters.DB_SSL);
+//        String timezone = configurationManager
+//                .getDatabaseParameters(dbProperties, DBParameters.DB_TIMEZONE);
+////
+//        dbUrl = url + unicode + ssl + timezone;
+//
+//        user = configurationManager
+//                .getDatabaseParameters(dbProperties, DBParameters.DB_USER);
+//        password = configurationManager
+//                .getDatabaseParameters(dbProperties, DBParameters.DB_PASSWORD);
+//
+//        poolSize = Integer.parseInt(configurationManager
+//                .getDatabaseParameters(dbProperties,
+//                        DBParameters.DB_POOL_SIZE));
+
+        if (poolSize < 0) {
+            throw new RuntimeException("Pool size incorrectly specified"
+                    + " in property file, the number of connections"
+                    + " should be positive digit.");
+        }
+    }
+
+    /**
+     * Returns the connection which is {@link PooledConnection}
+     * from the connection pool.
      * @return the connection which is {@link PooledConnection}
      * @throws ConnectionPoolException
-     *             if it is not possible to take exception from the connection pool
+     *             when it's not possible to take connection
+     *             from the connection pool.
      */
-    public Connection getConnection() throws ConnectionPoolException {
+    public Connection takeConnection() throws ConnectionPoolException {
         Connection connection;
 
         try {
-            connection = connectionQueue.take();
-
+            connection = freeConnections.take();
+            takenConnections.add(connection);
         } catch (InterruptedException e) {
             throw new ConnectionPoolException(
-                    "Exception during getting connection from connection pool.", e);
+                    "Exception during getting connection"
+                            + "from connection pool.", e);
         }
-
         return connection;
     }
 
-    public void closeDBResources(Connection connection,
-                                 Statement statement,
-                                 ResultSet resultSet)
-            throws SQLException {
+    /**
+     * Deregisters all the drivers.
+     * @throws ConnectionPoolException
+     *             when it's not possible to deregister driver.
+     */
+    public void deregisterAllDrivers() throws ConnectionPoolException {
 
-        closeResultSet(resultSet);
-        closeStatement(statement);
-        closeConnection(connection);
-    }
+        try {
+            Enumeration<Driver> drivers = DriverManager.getDrivers();
 
-    public void closeDBResources(Connection connection, Statement statement) throws SQLException {
-        closeDBResources(connection, statement, null);
-    }
-
-    public void closeDBResources(Statement... statements) throws SQLException {
-        for (Statement statement : statements) {
-            closeStatement(statement);
-        }
-    }
-
-    public void closeDBResources(ResultSet resultSet, Statement... statements) throws SQLException {
-        closeResultSet(resultSet);
-        for (Statement statement : statements) {
-            closeStatement(statement);
-        }
-    }
-
-    private void closeConnection(Connection connection) throws SQLException {
-        if (connection != null) {
-            connection.close();
-        }
-    }
-
-    private void closeStatement(Statement statement) throws SQLException {
-        if (statement != null) {
-            statement.close();
-        }
-    }
-
-    private void closeResultSet(ResultSet resultSet) throws SQLException {
-        if (resultSet != null) {
-            resultSet.close();
+            while (drivers.hasMoreElements()) {
+                Driver driver = drivers.nextElement();
+                DriverManager.deregisterDriver(driver);
+            }
+        } catch (SQLException e) {
+            throw new ConnectionPoolException(
+                    "Exception while deregistering drivers", e);
         }
     }
 
     /**
-     * Destroys the connection pool (really closes all connections - returns all
-     * connections to the data base).
+     * Destroys the connection pool.
      *
      * @throws ConnectionPoolException
      *             if exception during closing the connections occurred
      */
     public void destroy() throws ConnectionPoolException {
+
         for (int i = 0; i < poolSize; i++) {
+
             try {
-                Connection connection = connectionQueue.take();
-                if ( ! connection.getAutoCommit()) {
+                Connection connection = freeConnections.take();
+                if (!connection.getAutoCommit()) {
                     connection.commit();
                 }
                 ((PooledConnection) connection).reallyClose();
+
             } catch (SQLException | InterruptedException e) {
-                throw new ConnectionPoolException("Exception during closing the connection pool.", e);
+                throw new ConnectionPoolException(
+                        "Exception during closing the connection pool.", e);
             }
         }
     }

@@ -1,24 +1,41 @@
 package by.epam.university.dao;
 
-import by.epam.university.dao.impl.MySqlDAOFactory;
+import by.epam.university.dao.impl.UserDAOImpl;
 
 /**
- * An abstract factory for creating transactional and not transactional DAO
- * factories.
+ * Factory for getting instances of DAO classes.
  */
-public abstract class DAOFactory {
+public final class DAOFactory {
 
     /**
-     * Gets mysql DAO factory.
-     *
-     * @return new mysql DAO factory.
+     * Instance of DAOFactory.
      */
-    public static DAOFactory getFactory() {
-        return new MySqlDAOFactory();
+    private static final DAOFactory INSTANCE = new DAOFactory();
+
+    /**
+     * {@link DAOFactory} instance.
+     */
+    private static final UserDAO USER_DAO = new UserDAOImpl();
+
+    /**
+     * Prevents getting more than one instance of this class.
+     */
+    private DAOFactory() {
     }
 
-    // public abstract DAOManager getTransactionalDAOManager();
+    /**
+     * Gests the instance of DAO Factory.
+     * @return instance.
+     */
+    public static DAOFactory getInstance() {
+        return INSTANCE;
+    }
 
-    public abstract DAOManager getNonTransactionalDAOManager();
-
+    /**
+     * Gets UserDAO instance.
+     * @return UserDAO.
+     */
+    public UserDAO getUserDAO() {
+        return USER_DAO;
+    }
 }

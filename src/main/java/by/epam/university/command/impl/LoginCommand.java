@@ -1,10 +1,10 @@
 package by.epam.university.command.impl;
 
 import by.epam.university.command.Command;
+import by.epam.university.command.constant.PathConstants;
 import by.epam.university.command.constant.MessageConstants;
 import by.epam.university.command.constant.RequestConstants;
 import by.epam.university.command.constant.SessionConstants;
-import by.epam.university.command.constant.ViewPath;
 import by.epam.university.content.NavigationType;
 import by.epam.university.content.RequestContent;
 import by.epam.university.content.RequestResult;
@@ -14,8 +14,10 @@ import by.epam.university.service.ServiceFactory;
 import by.epam.university.service.UserService;
 import by.epam.university.service.exception.ServiceException;
 import by.epam.university.service.exception.ValidationException;
+import by.epam.university.util.ConfigurationManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 
 /**
@@ -28,6 +30,11 @@ public class LoginCommand implements Command {
      */
     private static final Logger LOGGER
             = LogManager.getLogger(LoginCommand.class);
+    /**
+     * The instance of Configuration Manager.
+     */
+    private static final ConfigurationManager CONFIGURATION_MANAGER
+            = ConfigurationManager.getInstance();
 
     /**
      * {@inheritDoc}
@@ -60,12 +67,8 @@ public class LoginCommand implements Command {
                    requestContent.setSessionAttribute(
                            SessionConstants.ROLE, role);
 
-                   String viewPath
-                           = defineViewPath(role, requestContent).toString();
-
-                   System.out.println(viewPath);
-
-                   return new RequestResult(NavigationType.REDIRECT, viewPath);
+                   return new RequestResult(NavigationType.REDIRECT,
+                           defineViewPath(role));
 
                } else {
                    requestContent.setSessionAttribute(
@@ -96,22 +99,24 @@ public class LoginCommand implements Command {
            }
         }
 
-        private StringBuilder defineViewPath(
-                final Role role,
-                final RequestContent requestContent) {
+    /**
+     * Defines the page path for admin or entrant.
+     * @param role user's role.
+     * @return page path.
+     */
+        private String defineViewPath(
+                final Role role) {
 
-            StringBuilder viewPath = new StringBuilder();
             switch (role) {
                 case ADMIN:
-                    return viewPath
-                            .append(requestContent.getCurrentPage())
-                            .append(ViewPath.ADMIN_MENU);
+                    return CONFIGURATION_MANAGER
+                            .getPath(PathConstants.ADMIN);
                 case ENTRANT:
-                    return viewPath
-                            .append(requestContent.getCurrentPage())
-                            .append(ViewPath.ENTRANT_MENU);
+                    return CONFIGURATION_MANAGER
+                            .getPath(PathConstants.ENTRANT);
                 default:
-                    return viewPath.append(ViewPath.MAIN_PAGE);
+                    return CONFIGURATION_MANAGER
+                            .getPath(PathConstants.MAIN_PAGE);
             }
-        }
-    }
+       }
+}
