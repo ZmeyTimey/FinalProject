@@ -30,6 +30,7 @@ public class LoginCommand implements Command {
      */
     private static final Logger LOGGER
             = LogManager.getLogger(LoginCommand.class);
+
     /**
      * The instance of Configuration Manager.
      */
@@ -37,14 +38,17 @@ public class LoginCommand implements Command {
             = ConfigurationManager.getInstance();
 
     /**
+     * {@link UserService} instance.
+     */
+    private static final UserService USER_SERVICE
+            = ServiceFactory.getInstance().getUserService();
+
+    /**
      * {@inheritDoc}
      */
        @Override
         public RequestResult execute(final RequestContent requestContent)
                throws IOException {
-
-           UserService userService
-                   = ServiceFactory.getInstance().getUserService();
 
            try {
                String login
@@ -54,11 +58,12 @@ public class LoginCommand implements Command {
                        = requestContent.getParameter(
                                RequestConstants.USER_PASSWORD);
 
-               User user = userService.logIn(login, password);
+               User user = USER_SERVICE.logIn(login, password);
 
                if (user != null) {
 
                    Role role = user.getRole();
+                   String facultyId = user.getFacultyId();
 
                    requestContent.setSessionAttribute(
                            SessionConstants.USER_ID, user.getId());
@@ -66,6 +71,14 @@ public class LoginCommand implements Command {
                            SessionConstants.LOGIN, user.getLogin());
                    requestContent.setSessionAttribute(
                            SessionConstants.ROLE, role);
+                   requestContent.setSessionAttribute(
+                           SessionConstants.FACULTY_ID, facultyId);
+                   requestContent.setSessionAttribute(
+                           SessionConstants.IS_APPLICATION_SENT,
+                           user.isApplicationSent());
+                   requestContent.setSessionAttribute(
+                           SessionConstants.IS_USER_ENLISTED,
+                           user.isEnlisted());
 
                    return new RequestResult(NavigationType.REDIRECT,
                            defineViewPath(role));

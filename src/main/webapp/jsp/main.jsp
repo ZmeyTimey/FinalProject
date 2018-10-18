@@ -8,10 +8,17 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>Menu</title>
 </head>
 <body>
 <h1>Main menu</h1>
-<%--<a href="logout">Logout</a>--%>
+<form method="post" action="/controller">
+    <input type="hidden" name="command" value="sign in">
+    <input class="button" type="submit" value="SIGN IN">
+</form>
+<form method="post" action="/controller">
+    <input type="hidden" name="command" value="sign up">
+    <input class="button" type="submit" value="SIGN UP">
+</form>
 </body>
 </html>

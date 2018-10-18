@@ -15,9 +15,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Accumulates the data from {@code request} that are extracted
- * into {@code RequestContent} then after command
- * has been executed inserts the data into {@code request}.
+ * Accumulates the data from request that are extracted
+ * into RequestContent then after command
+ * has been executed inserts the data into request.
  */
 public class RequestContent {
 
@@ -52,7 +52,7 @@ public class RequestContent {
 
     /**
      * Extracts all the values from request.
-     * @param request {@code request}.
+     * @param request request.
      */
     public void extractValues(final HttpServletRequest request) {
 
@@ -66,7 +66,7 @@ public class RequestContent {
 
     /**
      * Inserts attributes into request.
-     * @param request {@code request}
+     * @param request request
      */
     public void insertValues(final HttpServletRequest request) {
 
@@ -76,7 +76,7 @@ public class RequestContent {
 
     /**
      * Extracts attributes from request.
-     * @param request {@code request}
+     * @param request request
      */
     private void extractAttributes(final HttpServletRequest request) {
         Enumeration<String> attributeNames = request.getAttributeNames();
@@ -90,7 +90,7 @@ public class RequestContent {
 
     /**
      * Extracts parameters from request.
-     * @param request {@code request}
+     * @param request request
      */
     private void extractParameters(final HttpServletRequest request) {
         Enumeration<String> parameterNames = request.getParameterNames();
@@ -104,7 +104,7 @@ public class RequestContent {
 
     /**
      * Extract attributes from session.
-     * @param request {@code request}
+     * @param request request
      */
     private void extractSessionAttributes(final HttpServletRequest request) {
         HttpSession session = request.getSession(false);
@@ -125,7 +125,7 @@ public class RequestContent {
 
     /**
      * Extracts parts from request.
-     * @param request {@code request}
+     * @param request request
      */
     private void extractParts(final HttpServletRequest request) {
 
@@ -146,7 +146,7 @@ public class RequestContent {
 
     /**
      * Inserts attributes into request.
-     * @param request {@code request}
+     * @param request request
      */
     private void insertAttributes(final HttpServletRequest request) {
 
@@ -157,7 +157,7 @@ public class RequestContent {
 
     /**
      * Inserts attributes into session.
-     * @param request {@code request}
+     * @param request request
      */
     private void insertSessionAttributes(final HttpServletRequest request) {
         HttpSession session = request.getSession(false);
@@ -270,7 +270,7 @@ public class RequestContent {
     }
 
 
-    public void setSessionToBeInvalidated(final boolean sessInvalid) {
-        sessionToBeInvalidated = sessInvalid;
+    public void setSessionToBeInvalidated(final boolean sessionInvalid) {
+        sessionToBeInvalidated = sessionInvalid;
     }
 }

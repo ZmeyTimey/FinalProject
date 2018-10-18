@@ -3,7 +3,7 @@ package by.epam.university.content;
 import java.util.Objects;
 
 /**
- * Contains the {@code page} to which {@code sendRedirect()}
+ * Contains the page to which {@code sendRedirect()}
  * or {@code forward()} will be performed,
  * the latter is defined by {@code navigationType}.
  *

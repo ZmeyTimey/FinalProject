@@ -1,19 +1,21 @@
 package by.epam.university.command.exception;
 
-    public class CommandParserException extends Exception {
+    public class CommandParserException
+            extends Exception {
 
         public CommandParserException() {
         }
 
-        public CommandParserException(String message) {
+        public CommandParserException(final String message) {
             super(message);
         }
 
-        public CommandParserException(String message, Throwable cause) {
+        public CommandParserException(final String message,
+                                      final Throwable cause) {
             super(message, cause);
         }
 
-        public CommandParserException(Throwable cause) {
+        public CommandParserException(final Throwable cause) {
             super(cause);
         }
     }

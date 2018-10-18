@@ -98,12 +98,6 @@ public class Controller extends HttpServlet {
                 case REDIRECT:
                     redirect(requestResult.getPage(), response);
                     break;
-//                default:
-//                    LOGGER.log(Level.ERROR,
-//                            "Some troubles occurred"
-//                                    + "while executing command");
-//                    redirect(ERROR_PAGE, response);
-//                    break;
             }
 
         } else {

@@ -10,7 +10,7 @@ public class MessageConstants {
     public static final String ACCESS_DENIED = "message.access_denied";
 
     /**
-     * Prevents getting more than one instance of this class.
+     * Prevents getting an instance of this class.
      */
     private MessageConstants() {
         throw new AssertionError(

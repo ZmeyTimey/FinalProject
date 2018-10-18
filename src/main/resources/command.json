@@ -1,4 +1,15 @@
 {
   "login": "by.epam.university.command.impl.LoginCommand",
-  "logout": "by.epam.university.command.impl.LogoutCommand"
+  "logout": "by.epam.university.command.impl.LogoutCommand",
+  "sign in": "by.epam.university.command.impl.GoToSignInCommand",
+  "sign up": "by.epam.university.command.impl.GoToSignUpCommand",
+  "registration": "by.epam.university.command.impl.RegistrationCommand",
+  "personal info": "by.epam.university.command.impl.GoToPersonalInfoCommand",
+  "go to application": "by.epam.university.command.impl.GoToApplicationCommand",
+  "edit personal info": "by.epam.university.command.impl.UserInfoEditCommand",
+  "send application": "by.epam.university.command.impl.SendApplicationCommand",
+  "test": "by.epam.university.command.impl.TestCommand",
+  "go to user list": "by.epam.university.command.impl.GoToEntrantApplicationsCommand",
+  "view_certificate": "by.epam.university.command.impl.ViewCertificateCommand",
+  "go to competition management": "by.epam.university.command.impl.GoToCompetitionMenu"
 }

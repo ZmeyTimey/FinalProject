@@ -23,7 +23,7 @@ public interface Command {
      *             if {@link RequestDispatcher#forward} throws this exception
      * @throws IOException
      *             if {@link RequestDispatcher#forward} throws this exception
-     * @return {@link RequestResult} instance which contains the command result.
+     * @return {@link RequestResult} instance which contains the command result
      */
     RequestResult execute(RequestContent requestContent)
             throws ServletException, IOException;

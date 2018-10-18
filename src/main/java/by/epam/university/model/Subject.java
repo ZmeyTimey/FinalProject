@@ -7,33 +7,80 @@ public enum Subject {
     /**
      * Physics.
      */
-    PHYSICS,
+    PHYSICS {
+//        @Override
+//        public String toString() {
+//            return "физика";
+//        }
+    },
+
     /**
      * Mathematics.
      */
-    MATHEMATICS,
+    MATHEMATICS {
+//        @Override
+//        public String toString() {
+//            return "математика";
+//        }
+    },
+
     /**
      * Russian language.
      */
-    RUSSIAN,
+    RUSSIAN {
+//        @Override
+//        public String toString() {
+//            return "русский язык";
+//        }
+    },
+
     /**
      * Biology.
      */
-    BIOLOGY,
+    BIOLOGY {
+        @Override
+        public String toString() {
+            return "биология";
+        }
+    },
+
     /**
      * English language.
      */
-    ENGLISH,
+    ENGLISH {
+        @Override
+        public String toString() {
+            return "английский язык";
+        }
+    },
+
     /**
      * Chemistry.
      */
-    CHEMISTRY,
+    CHEMISTRY {
+        @Override
+        public String toString() {
+            return "химия";
+        }
+    },
+
     /**
      * Social science.
      */
-    SOCIAL_SCIENCE,
+    SOCIAL_SCIENCE {
+        @Override
+        public String toString() {
+            return "обществоведение";
+        }
+    },
+
     /**
      * History.
      */
-    HISTORY
+    HISTORY {
+        @Override
+        public String toString() {
+            return "история";
+        }
+    }
 }

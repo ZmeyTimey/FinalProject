@@ -11,7 +11,6 @@
     <title>$Title$</title>
   </head>
   <body>
-  <%--<ahr ref = "/WEB-INF/jsp/authorized/login.jsp">--%>
-  <jsp:forward page="jsp/login.jsp"/>
+  <jsp:forward page="jsp/main.jsp"/>
   </body>
 </html>

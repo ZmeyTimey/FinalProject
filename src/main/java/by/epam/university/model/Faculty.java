@@ -1,5 +1,7 @@
 package by.epam.university.model;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -21,6 +23,11 @@ public class Faculty {
      * The number of applicants planned to be enrolled in the faculty.
      */
     private int recruitmentPlan;
+
+    /**
+     * The list of user ids with submitted applications for this faculty.
+     */
+    private List<Integer> submittedApplications;
 
     /**
      * First of the subjects for which you had to pass exam
@@ -107,7 +114,7 @@ public class Faculty {
      * @param name name of faculty.
      */
     public void setFacultyName(final String name) {
-        this.facultyName = facultyName;
+        facultyName = name;
     }
 
     /**
@@ -124,6 +131,22 @@ public class Faculty {
      */
     public void setRecruitmentPlan(final int plan) {
         recruitmentPlan = plan;
+    }
+
+    /**
+     * Gets the list of user ids with submitted applications.
+     * @return submitted applications
+     */
+    public List<Integer> getSubmittedApplications() {
+        return submittedApplications;
+    }
+
+    /**
+     * Sets the list of user ids with submitted applications.
+     * @param applications submitted applications
+     */
+    public void setSubmittedApplications(final List<Integer> applications) {
+        submittedApplications = applications;
     }
 
     /**
@@ -179,6 +202,10 @@ public class Faculty {
      * @return set of specialities.
      */
     public Set<Speciality> getSetOfSpecialities() {
+
+        if (setOfSpecialities == null) {
+            setOfSpecialities = new HashSet<>();
+        }
         return setOfSpecialities;
     }
 }

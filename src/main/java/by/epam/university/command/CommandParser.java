@@ -58,7 +58,6 @@ public class CommandParser {
         return map;
     }
 
-
     private Command createCommand(final Object value)
             throws CommandParserException {
 

@@ -48,19 +48,37 @@ public class User {
      * User's role.
      */
     private Role role;
+
     /**
      * This variable shows is an entrant enlisted.
      */
-    private boolean isEnlisted;
+    private Boolean isEnlisted;
 
     /**
-     * Average score of the entrant's school certificate, multiplied by 10.
+     * This variable shows is user sent an application
+     * for admission to the university.
      */
-    private int schoolCertificate;
+    private Boolean isApplicationSent;
+
     /**
-     * Id of the speciality specialty for which the antrant is applying.
+     * This variable shows is user's application confirmed by administrator.
      */
-    private String specialityId;
+    private Boolean isApplicationConfirmed;
+
+    /**
+     * Id of the faculty to which the user is registered.
+     */
+    private String facultyId;
+
+    /**
+     * The specialty for which the entrant is applying.
+     */
+    private Speciality speciality;
+
+    /**
+     * Certificate which stores entrant's grades.
+     */
+    private Certificate certificate;
 
     /**
      * Instantiates a new User instance.
@@ -70,15 +88,18 @@ public class User {
 
     /**
      * Instantiates a new User instance.
-     * @param userId    user's id.
-     * @param log       user's login.
-     * @param pWord     user's password.
-     * @param nm        user's name.
-     * @param midName   user's middlename.
-     * @param sName     user's surname.
-     * @param mail      user's email address.
-     * @param tel       user's phone number.
-     * @param rl        user's role.
+     * @param userId    user's id
+     * @param log       user's login
+     * @param pWord     user's password
+     * @param nm        user's name
+     * @param midName   user's middlename
+     * @param sName     user's surname
+     * @param mail      user's email address
+     * @param tel       user's phone number
+     * @param rl        user's role
+     * @param flt       faculty id
+     * @param spec      speciality
+     * @param cert      user's certificate
      */
     public User(final int userId,
                 final String log,
@@ -88,7 +109,10 @@ public class User {
                 final String sName,
                 final String mail,
                 final String tel,
-                final Role rl) {
+                final Role rl,
+                final String flt,
+                final Speciality spec,
+                final Certificate cert) {
         id = userId;
         login = log;
         password = pWord;
@@ -98,6 +122,9 @@ public class User {
         email = mail;
         phone = tel;
         role = rl;
+        facultyId = flt;
+        speciality = spec;
+        certificate = cert;
     }
 
     /**
@@ -245,52 +272,99 @@ public class User {
     }
 
     /**
-     * Gets isEnlisted variable.
-     * @return isEnlisted.
+     * Gets {@code isEnlisted}.
+     * @return boolean value of the variable.
      */
-    public boolean isEnlisted() {
+    public Boolean isEnlisted() {
         return isEnlisted;
     }
 
     /**
-     * Sets isEnlisted variable.
-     * @param enlisted isEnlisted variable.
+     * Sets {@code isEnlisted}.
+     * @param enlisted input boolean value.
      */
-    public void setEnlisted(final boolean enlisted) {
+    public void setEnlisted(final Boolean enlisted) {
         isEnlisted = enlisted;
     }
 
     /**
-     * Gets an average score of the entrant's school certificate.
-     * @return schoolCertificate.
+     * Gets {@code isApplicationSent}.
+     * @return boolean value of the variable
      */
-    public int getSchoolCertificate() {
-        return schoolCertificate;
+    public Boolean isApplicationSent() {
+        return isApplicationSent;
     }
 
     /**
-     * Sets school certificate value.
-     * @param certificate an average score
-     *                          of the entrant's school certificate.
+     * Sets {@code isApplicationSent}.
+     * @param applSent input boolean value
      */
-    public void setSchoolCertificate(final int certificate) {
-        schoolCertificate = certificate;
+    public void setApplicationSent(final Boolean applSent) {
+        isApplicationSent = applSent;
     }
 
     /**
-     * Gets id of the faculty where the entrant is registered.
-     * @return specialityId.
+     * Gets {@code isApplicationConfirmed}.
+     * @return boolean value of the variable
      */
-    public String getSpecialityId() {
-        return specialityId;
+    public Boolean getIsApplicationConfirmed() {
+        return isApplicationConfirmed;
     }
 
     /**
-     * Sets id of the faculty.
-     * @param userId id of the faculty where the entrant is registered.
+     * Sets {@code isApplicationConfirmed}.
+     * @param applConf input boolean value
      */
-    public void setSpecialityId(final String userId) {
-        this.specialityId = specialityId;
+    public void setApplicationConfirmed(final Boolean applConf) {
+        isApplicationConfirmed = applConf;
+    }
+
+    /**
+     * Gets user's certificate.
+     * @return certificate.
+     */
+    public Certificate getCertificate() {
+        return certificate;
+    }
+
+    /**
+     * Sets user's certificate.
+     * @param cert certificate which contains user's grades.
+     */
+    public void setCertificate(final Certificate cert) {
+        certificate = cert;
+    }
+
+    /**
+     * Gets the id of the faculty where the entrant is registered.
+     * @return facultyId.
+     */
+    public String getFacultyId() {
+        return facultyId;
+    }
+
+    /**
+     * Sets the id of the faculty.
+     * @param flt id the faculty where the entrant is registered.
+     */
+    public void setFacultyId(final String flt) {
+        facultyId = flt;
+    }
+
+    /**
+     * Gets the speciality chosen by the entrant.
+     * @return speciality.
+     */
+    public Speciality getSpeciality() {
+        return speciality;
+    }
+
+    /**
+     * Sets the speciality.
+     * @param spec of the speciality chosen by the entrant.
+     */
+    public void setSpeciality(final Speciality spec) {
+        speciality = spec;
     }
 }
 

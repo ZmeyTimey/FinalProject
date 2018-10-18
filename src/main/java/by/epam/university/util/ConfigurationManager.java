@@ -3,24 +3,24 @@ package by.epam.university.util;
 import java.util.ResourceBundle;
 
 /**
- * Helps to get messages from resource files.
+ * Helps to get MESSAGES_BUNDLE from resource files.
  */
 public class ConfigurationManager {
 
     private static final ConfigurationManager INSTANCE
             = new ConfigurationManager();
 
-    private final static ResourceBundle path
+    private static final  ResourceBundle PATH
             = ResourceBundle.getBundle("path");
-    private final static ResourceBundle messages
+    private static final  ResourceBundle MESSAGES_BUNDLE
             = ResourceBundle.getBundle("messages");
 
-    private final static String MESSAGES = "messages";
-//    private final static String MESSAGES_RU = "messages_ru";
-//    private final static String MESSAGES_EN = "messages_en";
-//    private final static String RUSSIAN_LOCALE = "ru";
-//    private final static String ENGLISH_LOCALE = "en";
-    private final static String EMPTY_STRING = "";
+    private static final  String MESSAGES = "messages";
+    private static final String MESSAGES_RU = "messages_ru";
+    private static final String MESSAGES_EN = "messages_en";
+    private static final String RUSSIAN_LOCALE = "ru";
+    private static final String ENGLISH_LOCALE = "en";
+    private static final  String EMPTY_STRING = "";
 
     /**
      * Prevents getting the instance of Configuration Manager
@@ -41,11 +41,11 @@ public class ConfigurationManager {
      * Defines the page.
      *
      * @param key the key
-     * @return the path
+     * @return the PATH
      *
      */
     public String getPath(final String key) {
-        return path.getString(key);
+        return PATH.getString(key);
     }
 
     /**
@@ -56,31 +56,30 @@ public class ConfigurationManager {
      *
      */
     public String getMessage(final String key) {
-        return messages.getString(key);
+        return MESSAGES_BUNDLE.getString(key);
     }
 
-//    /**
-//     * Gets message of certain locale.
-//     *
-//     * @param key    the key
-//     * @param locale {@link by.epam.cattery.entity.LocaleLang}
-//     * @return the message
-//     *
-//     */
+    /**
+     * Gets message of certain locale.
+     *
+     * @param key    the key
+     * @param locale {@link by.epam.university.model.Locale} with language
+     * @return the message
+     */
     public String getMessage(final String key, final String locale) {
 
         String message = EMPTY_STRING;
 
         message = ResourceBundle.getBundle(MESSAGES).getString(key);
 
-        //        switch (locale) {
-//            case RUSSIAN_LOCALE:
-//                message = ResourceBundle.getBundle(MESSAGES_RU).getString(key);
-//                break;
-//            case ENGLISH_LOCALE:
-//                message = ResourceBundle.getBundle(MESSAGES_EN).getString(key);
-//                break;
-//        }
+                switch (locale) {
+            case RUSSIAN_LOCALE:
+                message = ResourceBundle.getBundle(MESSAGES_RU).getString(key);
+                break;
+            case ENGLISH_LOCALE:
+                message = ResourceBundle.getBundle(MESSAGES_EN).getString(key);
+                break;
+        }
         return message;
     }
 
@@ -88,8 +87,8 @@ public class ConfigurationManager {
      * Gets the database parameters.
      *
      * @param key the key
+     * @param dbProperties bundle with data base properties
      * @return the database parameters
-     *
      */
     public String getDatabaseParameters(final String dbProperties,
                                         final String key) {

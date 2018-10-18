@@ -108,8 +108,8 @@ public final class ConnectionPool {
      * Initializes the Connection Pool. Gets data base and connection pool
      * configurations with a help of {@link ConfigurationManager}.
      * Creates a new queue of connections of defined size and fills it
-     * with pooled connections to the defined data base
-     * (see {@link PooledConnection}
+     * with pooled connections to the defined database
+     * @param dbProperties bundle with information for connecting database.
      *
      * @throws ConnectionPoolException
      *             exception during connection pool initialization
@@ -139,6 +139,7 @@ public final class ConnectionPool {
 
     /**
      * Initializes Connection Pool data.
+     * @param dbProperties bundle with information for connecting database.
      */
     private void initPoolData(final String dbProperties) {
 

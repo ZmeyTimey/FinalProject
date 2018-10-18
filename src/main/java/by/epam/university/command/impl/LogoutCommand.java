@@ -23,10 +23,12 @@ public class LogoutCommand implements Command {
             = LogManager.getLogger(LoginCommand.class);
 
     /**
-     * The instance of Configuration Manager.
+     * Path to main page.
      */
-    private static final ConfigurationManager CONFIGURATION_MANAGER
-            = ConfigurationManager.getInstance();
+    private static final String MAIN_PAGE
+            = ConfigurationManager.getInstance()
+            .getPath(PathConstants.MAIN_PAGE);
+
     /**
      * {@inheritDoc}
      */
@@ -35,8 +37,6 @@ public class LogoutCommand implements Command {
 
         requestContent.setSessionToBeInvalidated(true);
 
-        return new RequestResult(NavigationType.REDIRECT,
-                CONFIGURATION_MANAGER.getPath(PathConstants.LOGIN_PAGE));
-
+        return new RequestResult(NavigationType.REDIRECT, MAIN_PAGE);
     }
 }
